@@ -1,30 +1,42 @@
 module.exports = {
-  title: "homeduino device config schemes"
+  title: "Homeduino device config schemes"
   HomeduinoDHTSensor: {
     title: "HomeduinoDHTSensor config options"
     type: "object"
-    extensions: ["xLink"]
+    extensions: ["xLink", "xAttributeOptions"]
     properties:
       type:
-        description: "The type of the dht sensor (22, 33, 44 or 55)"
+        description: "The type of the DHT sensor (22, 33, 44 or 55)"
         type: "integer"
         default: 22
       pin: 
         description: "The digital pin, the DHT sensor is connected to."
         type: "integer"
       interval:
-        description: "Polling interval for the readings, should be greater then 2"
+        description: "Polling interval for the readings, should be greater than 2"
         type: "integer"
         default: 10000
+      processingTemp: 
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the temperature 
+          value itself."
+        type: "string"
+        default: "$value"
+      processingHum: 
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the humidity 
+          value itself."
+        type: "string"
+        default: "$value"
     required: ["pin"]
   },
   HomeduinoDSTSensor: {
     title: "HomeduinoDSTSensor config options"
     type: "object"
-    extensions: ["xLink"]
+    extensions: ["xLink", "xAttributeOptions"]
     properties:
       interval:
-        description: "Polling interval for the readings, should be greater then 2"
+        description: "Polling interval for the readings, should be greater than 2"
         type: "integer"
         default: 10000
       pin:
@@ -33,20 +45,18 @@ module.exports = {
       address:  
         description: "The address of the sensor"
         type: "string"
+      processing: 
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the 
+          value itself."
+        type: "string"
+        default: "$value"
   },
   HomeduinoRFSwitch: {
     title: "HomeduinoRFSwitch config options"
     type: "object"
     extensions: ["xConfirm", "xLink", "xOnLabel", "xOffLabel"]
     properties:
-      protocol:
-        description: "The switch protocol to use."
-        type: "string"
-        default: ""
-      protocolOptions:
-        description: "The protocol options"
-        type: "object"
-        default: {}
       protocols:
         description: "The switch protocols to use."
         type: "array"
@@ -176,7 +186,7 @@ module.exports = {
     required: ["protocols"]
   }
   HomeduinoRFShutter: {
-    title: "HomeduinoRFSwitch config options"
+    title: "HomeduinoRFShutter config options"
     type: "object"
     extensions: ["xConfirm", "xLink", "xOnLabel", "xOffLabel"]
     properties:
@@ -202,7 +212,7 @@ module.exports = {
   HomeduinoRFTemperature: {
     title: "HomeduinoRFTemperature config options"
     type: "object"
-    extensions: ["xLink"]
+    extensions: ["xLink", "xAttributeOptions"]
     properties:
       protocols:
         description: "The protocols to use."
@@ -217,12 +227,24 @@ module.exports = {
             options:
               description: "The protocol options"
               type: "object"
+      processingTemp: 
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the temperature 
+          value itself."
+        type: "string"
+        default: "$value"
+      processingHum: 
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the humidity 
+          value itself."
+        type: "string"
+        default: "$value"
     required: ["protocols"]
   }
   HomeduinoRFWeatherStation: {
     title: "HomeduinoRFWeatherStation config options"
     type: "object"
-    extensions: ["xLink"]
+    extensions: ["xLink", "xAttributeOptions"]
     properties:
       values:
         type: "array"
@@ -248,7 +270,7 @@ module.exports = {
   HomeduinoRFGenericSensor: {
     title: "HomeduinoRFGenericSensor config options"
     type: "object"
-    extensions: ["xLink"]
+    extensions: ["xLink", "xAttributeOptions"]
     properties:
       protocols:
         description: "The protocols to use."
@@ -288,16 +310,45 @@ module.exports = {
               description: "The unit of the attribute"
               type: "string"
               default: ""
+              required: false
             label:
               description: "A custom label to use in the frontend."
               type: "string"
               default: ""
-
+              required: false
+            discrete:
+              description: "
+                Should be set to true if the value does not change continuously over time.
+              "
+              type: "boolean"
+              required: false
+            acronym:
+              description: "Acronym to show as value label in the frontend"
+              type: "string"
+              required: false
+  }
+  HomeduinoContactSensor: {
+    title: "HomeduinoContactSensor config options"
+    type: "object"
+    extensions: ["xConfirm", "xLink", "xClosedLabel", "xOpenedLabel"]
+    properties:
+      inverted:
+        description: "active low?"
+        type: "boolean"
+        default: false
+      interval:
+        description: "Time until the pin is readed again."
+        type: "integer"
+        default: 10000
+      pin:
+        description: "Digital Pin number on the Arduino"
+        type: "integer"
+    required: ["pin"]
   }
   HomeduinoAnalogSensor: {
     title: "HomeduinoAnalogSensor config options"
     type: "object"
-    extensions: ["xLink"]
+    extensions: ["xLink", "xAttributeOptions"]
     properties:
       attributes:
         description: "The attributes (sensor values) of the sensor"
@@ -321,7 +372,7 @@ module.exports = {
               description: "Arduino analog pin to read"
               type: "integer"
             interval:
-              description: "The interval in whicht the analog pin should be read in ms"
+              description: "The interval in which the analog pin should be read in ms"
               type: "integer"
               default: 5000
             processing: 
@@ -330,6 +381,16 @@ module.exports = {
                 value itself."
               type: "string"
               default: "$value"
+            discrete:
+              description: "
+                Should be set to true if the value does not change continuously over time.
+              "
+              type: "boolean"
+              required: false
+            acronym:
+              description: "Acronym to show as value label in the frontend"
+              type: "string"
+              required: false
 
   }
   HomeduinoKeypad: {
@@ -368,8 +429,13 @@ module.exports = {
             options:
               description: "The protocol options"
               type: "object"
+      autoReset:
+        description: """Reset the state after resetTime. Usefull for pir sensors, 
+                      that emit present and absent events"""
+        type: "boolean"
+        default: true
       resetTime:
-        description: "Time after that the presence value is resettet to absent."
+        description: "Time after that the presence value is reseted to absent."
         type: "integer"
         default: 10000
     required: ["protocols"]
@@ -386,5 +452,9 @@ module.exports = {
         description: "active low?"
         type: "boolean"
         default: false
+      defaultState:
+        description: "State to set on startup, if not given, last state will be restored"
+        type: "boolean"
+        required: false
   }
 }
