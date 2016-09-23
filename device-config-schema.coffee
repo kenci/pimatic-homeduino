@@ -9,26 +9,25 @@ module.exports = {
         description: "The type of the DHT sensor (22, 33, 44 or 55)"
         type: "integer"
         default: 22
-      pin: 
+      pin:
         description: "The digital pin, the DHT sensor is connected to."
         type: "integer"
       interval:
         description: "Polling interval for the readings, should be greater than 2"
         type: "integer"
         default: 10000
-      processingTemp: 
+      processingTemp:
         description: "
-          expression that can preprocess the value, $value is a placeholder for the temperature 
+          expression that can preprocess the value, $value is a placeholder for the temperature
           value itself."
         type: "string"
         default: "$value"
-      processingHum: 
+      processingHum:
         description: "
-          expression that can preprocess the value, $value is a placeholder for the humidity 
+          expression that can preprocess the value, $value is a placeholder for the humidity
           value itself."
         type: "string"
         default: "$value"
-    required: ["pin"]
   },
   HomeduinoDSTSensor: {
     title: "HomeduinoDSTSensor config options"
@@ -42,12 +41,12 @@ module.exports = {
       pin:
         description: "The digital pin the DST sensor is connected to."
         type : "integer"
-      address:  
+      address:
         description: "The address of the sensor"
         type: "string"
-      processing: 
+      processing:
         description: "
-          expression that can preprocess the value, $value is a placeholder for the 
+          expression that can preprocess the value, $value is a placeholder for the
           value itself."
         type: "string"
         default: "$value"
@@ -78,11 +77,14 @@ module.exports = {
               type: "boolean"
               description: "Toggle receive with this protocol"
               default: true
-      forceSend: 
+            rfrepeats:
+              type: "number"
+              description: "The amount of RF repeats for this device"
+              required: false
+      forceSend:
         type: "boolean"
         description: "Resend signal even if switch has the requested state already"
         default: true
-    required: ["protocols"]
   },
   HomeduinoRFDimmer: {
     title: "HomeduinoRFDimmer config options"
@@ -110,11 +112,14 @@ module.exports = {
               type: "boolean"
               description: "Toggle receive with this protocol"
               default: true
-      forceSend: 
+            rfrepeats:
+              type: "number"
+              description: "The amount of RF repeats for this device"
+              required: false
+      forceSend:
         type: "boolean"
         description: "Resend signal even if switch has the requested state already"
         default: true
-    required: ["protocols"]
   },
   HomeduinoRFButtonsDevice: {
     title: "HomeduinoRFButtonsDevice config options"
@@ -154,7 +159,10 @@ module.exports = {
                     type: "boolean"
                     description: "Toggle receive with this protocol"
                     default: true
-            required: ["protocols"]
+                  rfrepeats:
+                    type: "number"
+                    description: "The amount of RF repeats for this device"
+                    required: false
   }
   HomeduinoRFContactSensor: {
     title: "HomeduinoRFContactSensor config options"
@@ -175,15 +183,14 @@ module.exports = {
               description: "The protocol options"
               type: "object"
       autoReset:
-        description: """Reset the state after resetTime. Usefull for contact sensors, 
+        description: """Reset the state after resetTime. Useful for contact sensors,
                       that only emit open or close events"""
         type: "boolean"
-        default: false  
+        default: false
       resetTime:
         description: """Time after that the contact state is reseted."""
         type: "integer"
         default: 10000
-    required: ["protocols"]
   }
   HomeduinoRFShutter: {
     title: "HomeduinoRFShutter config options"
@@ -203,11 +210,22 @@ module.exports = {
             options:
               description: "The protocol options"
               type: "object"
-      forceSend: 
+            send:
+              type: "boolean"
+              description: "Toggle send with this protocol"
+              default: true
+            receive:
+              type: "boolean"
+              description: "Toggle receive with this protocol"
+              default: true
+            rfrepeats:
+              type: "number"
+              description: "The amount of RF repeats for this device"
+              required: false
+      forceSend:
         type: "boolean"
         description: "Resend signal even if switch has the requested state already"
         default: true
-    required: ["protocols"]
   }
   HomeduinoRFTemperature: {
     title: "HomeduinoRFTemperature config options"
@@ -227,19 +245,24 @@ module.exports = {
             options:
               description: "The protocol options"
               type: "object"
-      processingTemp: 
+      processingTemp:
         description: "
-          expression that can preprocess the value, $value is a placeholder for the temperature 
+          expression that can preprocess the value, $value is a placeholder for the temperature
           value itself."
         type: "string"
         default: "$value"
-      processingHum: 
+      processingHum:
         description: "
-          expression that can preprocess the value, $value is a placeholder for the humidity 
+          expression that can preprocess the value, $value is a placeholder for the humidity
           value itself."
         type: "string"
         default: "$value"
-    required: ["protocols"]
+      isFahrenheit:
+        description: "
+          boolean that sets the right units if the temperature is to be reported in
+           Fahrenheit"
+        type: "boolean"
+        default: false
   }
   HomeduinoRFWeatherStation: {
     title: "HomeduinoRFWeatherStation config options"
@@ -265,7 +288,42 @@ module.exports = {
             options:
               description: "The protocol options"
               type: "object"
-    required: ["protocols"]
+      processingTemp:
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the
+          value itself."
+        type: "string"
+        default: "$value"
+      processingHum:
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the
+          value itself."
+        type: "string"
+        default: "$value"
+      processingWindGust:
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the
+          value itself."
+        type: "string"
+        default: "$value"
+      processingAvgAirspeed:
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the
+          value itself."
+        type: "string"
+        default: "$value"
+      processingWindDirection:
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the
+          value itself."
+        type: "string"
+        default: "$value"
+      processingRain:
+        description: "
+          expression that can preprocess the value, $value is a placeholder for the
+          value itself."
+        type: "string"
+        default: "$value"
   }
   HomeduinoRFGenericSensor: {
     title: "HomeduinoRFGenericSensor config options"
@@ -300,7 +358,7 @@ module.exports = {
               type: "integer"
             decimals:
               description: "Decimals of the value in the rf message"
-              type: "integer"
+              type: "number"
               default: 0
             baseValue:
               description: "Offset that will be added to the value in the rf message"
@@ -337,13 +395,29 @@ module.exports = {
         type: "boolean"
         default: false
       interval:
-        description: "Time until the pin is readed again."
+        description: "Time until the pin is read again."
         type: "integer"
         default: 10000
       pin:
         description: "Digital Pin number on the Arduino"
         type: "integer"
-    required: ["pin"]
+  }
+  HomeduinoPir: {
+    title: "HomeduinoPir config options"
+    type: "object"
+    extensions: ["xLink", "xPresentLabel", "xAbsentLabel"]
+    properties:
+      inverted:
+        description: "active low?"
+        type: "boolean"
+        default: false
+      interval:
+        description: "Time until the pin is read again."
+        type: "integer"
+        default: 10000
+      pin:
+        description: "Digital Pin number on the Arduino"
+        type: "integer"
   }
   HomeduinoAnalogSensor: {
     title: "HomeduinoAnalogSensor config options"
@@ -368,16 +442,16 @@ module.exports = {
               description: "A custom label to use in the frontend."
               type: "string"
               default: ""
-            pin: 
+            pin:
               description: "Arduino analog pin to read"
               type: "integer"
             interval:
               description: "The interval in which the analog pin should be read in ms"
               type: "integer"
               default: 5000
-            processing: 
+            processing:
               description: "
-                expression that can preprocess the value, $value is a placeholder for the analog 
+                expression that can preprocess the value, $value is a placeholder for the analog
                 value itself."
               type: "string"
               default: "$value"
@@ -430,15 +504,14 @@ module.exports = {
               description: "The protocol options"
               type: "object"
       autoReset:
-        description: """Reset the state after resetTime. Usefull for pir sensors, 
+        description: """Reset the state after resetTime. Useful for pir sensors,
                       that emit present and absent events"""
         type: "boolean"
         default: true
       resetTime:
-        description: "Time after that the presence value is reseted to absent."
+        description: "Time after that the presence value is reset to absent."
         type: "integer"
         default: 10000
-    required: ["protocols"]
   }
   HomeduinoSwitch: {
     title: "HomeduinoSwitch config options"
@@ -456,5 +529,18 @@ module.exports = {
         description: "State to set on startup, if not given, last state will be restored"
         type: "boolean"
         required: false
-  }
+  },
+  HomeduinoAnalogDimmer: {
+    title: "HomeduinoAnalogDimmer config options"
+    type: "object"
+    extensions: ["xConfirm"]
+    properties:
+      pin:
+        description: "The pin"
+        type: "number"
+      forceSend:
+        type: "boolean"
+        description: "Resend signal even if switch has the requested state already"
+        default: true
+  },
 }
